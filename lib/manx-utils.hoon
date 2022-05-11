@@ -8,7 +8,7 @@
   ^-  ?
   %-  post-fold
   |=  [g=marx w=?]
-  ?:  ?=(%.n w)  w
+  ?.  w  w
   (~(has in b) n.g)
 :: whitelisted
 ::
@@ -19,7 +19,7 @@
   ^-  ?
   %-  post-fold
   |=  [g=marx w=_|]
-  ?:  ?=(%.y w)  w
+  ?:  w  w
   (~(has in b) n.g)
 :: get-max-depth
 ::
@@ -34,7 +34,7 @@
   $(c.a t.c.a)
 :: apply-elem:
 ::
-::   apply gate to tags/attrs (turn for manxes)
+::   apply gate to tags/attrs
 ::
 ++  apply-elem
   |=  b=$-(marx marx)
@@ -63,14 +63,14 @@
     ?~  c  ~
     [^$(a i.c, ch [g.i.c ch]) (cloop t.c)]
   --
-:: apply-nodes
+:: post-apply-nodes
 ::
 ::   apply gate to nodes in postorder
 ::
 ::   (unlike apply-elem, the gate takes the
 ::   whole manx instead of just marx)
 ::
-++  apply-nodes
+++  post-apply-nodes
   |=  b=$-(manx manx)
   |^  ^-  manx
   (b [g.a (cloop c.a)])
@@ -87,11 +87,11 @@
   |=  b=$-([mane tape] [mane tape])
   ^-  manx
   %-  apply-elem
-  |=  x=marx
+  |=  g=marx
   =|  y=mart
   |-
-  ?~  a.x  x(a (flop y))
-  $(a.x t.a.x, y [(b i.a.x) y])
+  ?~  a.g  g(a (flop y))
+  $(a.g t.a.g, y [(b i.a.g) y])
 :: apply-text
 ::
 ::   apply a gate to all ordinary text
@@ -100,12 +100,12 @@
   |=  b=$-(tape tape)
   ^-  manx
   %-  apply-elem
-  |=  x=marx
-  ?.  ?=(%$ n.x)            x
-  ?~  a.x                   x
-  ?.  ?=(%$ n.i.a.x)        x
-  ?^  t.a.x                 x
-  =.  v.i.a.x  (b v.i.a.x)  x
+  |=  g=marx
+  ?.  ?=(%$ n.g)            g
+  ?~  a.g                   g
+  ?.  ?=(%$ n.i.a.g)        g
+  ?^  t.a.g                 g
+  =.  v.i.a.g  (b v.i.a.g)  g
 :: post-fold
 ::
 ::   fold over tags/attrs in postorder
@@ -260,13 +260,13 @@
   |=  b=(set mane)
   ^-  manx
   %-  apply-elem
-  |=  x=marx
+  |=  g=marx
   =|  y=mart
   |-
-  ?~  a.x  x(a (flop y))
-  ?:  (~(has in b) n.i.a.x)
-    $(a.x t.a.x)
-  $(a.x t.a.x, y [i.a.x y])
+  ?~  a.g  g(a (flop y))
+  ?:  (~(has in b) n.i.a.g)
+    $(a.g t.a.g)
+  $(a.g t.a.g, y [i.a.g y])
 :: keep-attrs
 ::
 ::   delete all attributes except those
@@ -276,34 +276,34 @@
   |=  b=(set mane)
   ^-  manx
   %-  apply-elem
-  |=  x=marx
+  |=  g=marx
   =|  y=mart
   |-
-  ?~  a.x  x(a (flop y))
-  ?.  (~(has in b) n.i.a.x)
-    $(a.x t.a.x)
-  $(a.x t.a.x, y [i.a.x y])
+  ?~  a.g  g(a (flop y))
+  ?.  (~(has in b) n.i.a.g)
+    $(a.g t.a.g)
+  $(a.g t.a.g, y [i.a.g y])
 :: post-flatten
 ::
 ::   get a list of elements by postorder traversal
 ::
 ++  post-flatten
   ^-  marl
-  (flop (post-fold |=([x=marx l=marl] [[x ~] l])))
+  (flop (post-fold |=([g=marx l=marl] [[g ~] l])))
 :: pre-flatten
 ::
 ::   get a list of elements by preorder traversal
 ::
 ++  pre-flatten
   ^-  marl
-  (flop (pre-fold |=([x=marx l=marl] [[x ~] l])))
+  (flop (pre-fold |=([g=marx l=marl] [[g ~] l])))
 :: lvl-flatten
 ::
 ::   get a list of elements by level order traversal
 ::
 ++  lvl-flatten
   ^-  marl
-  (flop (lvl-fold |=([x=marx l=marl] [[x ~] l])))
+  (flop (lvl-fold |=([g=marx l=marl] [[g ~] l])))
 :: post-get-text
 ::
 ::   get a list of plain text by postorder traversal
@@ -312,12 +312,12 @@
   ^-  wall
   %-  flop
   %-  post-fold
-  |=  [x=marx l=wall]
-  ?.  ?=(%$ n.x)      l
-  ?~  a.x             l
-  ?.  ?=(%$ n.i.a.x)  l
-  ?^  t.a.x           l
-  :-  v.i.a.x         l
+  |=  [g=marx l=wall]
+  ?.  ?=(%$ n.g)      l
+  ?~  a.g             l
+  ?.  ?=(%$ n.i.a.g)  l
+  ?^  t.a.g           l
+  :-  v.i.a.g         l
 :: pre-get-text
 ::
 ::   get a list of plain text by preorder traversal
@@ -326,12 +326,12 @@
   ^-  wall
   %-  flop
   %-  pre-fold
-  |=  [x=marx l=wall]
-  ?.  ?=(%$ n.x)      l
-  ?~  a.x             l
-  ?.  ?=(%$ n.i.a.x)  l
-  ?^  t.a.x           l
-  :-  v.i.a.x         l
+  |=  [g=marx l=wall]
+  ?.  ?=(%$ n.g)      l
+  ?~  a.g             l
+  ?.  ?=(%$ n.i.a.g)  l
+  ?^  t.a.g           l
+  :-  v.i.a.g         l
 :: lvl-get-text
 ::
 ::   get a list of plain text by level order traversal
@@ -340,12 +340,12 @@
   ^-  wall
   %-  flop
   %-  lvl-fold
-  |=  [x=marx l=wall]
-  ?.  ?=(%$ n.x)      l
-  ?~  a.x             l
-  ?.  ?=(%$ n.i.a.x)  l
-  ?^  t.a.x           l
-  :-  v.i.a.x         l
+  |=  [g=marx l=wall]
+  ?.  ?=(%$ n.g)      l
+  ?~  a.g             l
+  ?.  ?=(%$ n.i.a.g)  l
+  ?^  t.a.g           l
+  :-  v.i.a.g         l
 :: search-text
 ::
 :: find plain text containing the given cord
@@ -355,17 +355,17 @@
   ^-  wall
   %-  flop
   %-  post-fold
-  |=  [x=marx l=wall]
-  ?.  ?=(%$ n.x)      l
-  ?~  a.x             l
-  ?.  ?=(%$ n.i.a.x)  l
-  ?^  t.a.x           l
+  |=  [g=marx l=wall]
+  ?.  ?=(%$ n.g)      l
+  ?~  a.g             l
+  ?.  ?=(%$ n.i.a.g)  l
+  ?^  t.a.g           l
   =+  par=(cury (jest b) *hair)
   ?.  |-
-      ?~  v.i.a.x  %.n
-      ?^  (tail (par v.i.a.x))
+      ?~  v.i.a.g  %.n
+      ?^  (tail (par v.i.a.g))
         %.y
-      $(v.i.a.x t.v.i.a.x)
+      $(v.i.a.g t.v.i.a.g)
     l
-  [v.i.a.x l]
+  [v.i.a.g l]
 --
